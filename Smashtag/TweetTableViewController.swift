@@ -61,8 +61,8 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         // "lastTwitterRequest?.newer ??" was added after lecture for REFRESHING
         if let request = lastTwitterRequest?.newer ?? twitterRequest() {
             lastTwitterRequest = request
-            request.fetchTweets { [weak self] (newTweets) in
-                DispatchQueue.main.async {
+            request.fetchTweets { [weak self] (newTweets) in // this is off the main queue
+                DispatchQueue.main.async { // so we must dispatch back to main queue
                     if request == self?.lastTwitterRequest {
                         self?.insertTweets(newTweets)
                     }
@@ -74,6 +74,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
+    // Added
     @IBAction func refresh(_ sender: UIRefreshControl)
     {   searchForTweets()
     }
@@ -121,6 +122,8 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        // make it a little clearer when each pull from Twitter
+        // occurs in the table by setting section header titles
         return "\(tweets.count-section)"
     }
 
