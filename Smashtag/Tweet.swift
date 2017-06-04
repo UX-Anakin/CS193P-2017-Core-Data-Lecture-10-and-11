@@ -14,7 +14,7 @@ class Tweet: NSManagedObject
 {
     class func findOrCreateTweet(matching twitterInfo: Twitter.Tweet, in context: NSManagedObjectContext) throws -> Tweet
     {
-        let request: NSFetchRequest<Tweet> = Tweet.fetchRequest()
+        let request: NSFetchRequest<Tweet> = Tweet.tweetFetchRequest()
         request.predicate = NSPredicate(format: "unique = %@", twitterInfo.identifier)
         do {
             let matches = try context.fetch(request)

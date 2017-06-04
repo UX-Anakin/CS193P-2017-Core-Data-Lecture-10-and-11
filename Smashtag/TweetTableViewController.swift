@@ -35,6 +35,10 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         self.tableView.insertSections([0], with: .fade)
     }
     
+    // MARK: Updating the Table
+    
+    // just creates a Twitter.Request
+    // that finds tweets that match our searchText
     private func twitterRequest() -> Twitter.Request? {
         if let query = searchText, !query.isEmpty {
             return Twitter.Request(search: "\(query) -filter:safe -filter:retweets", count: 100)
@@ -42,9 +46,19 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         return nil
     }
     
+    // we track this so that
+    // a) we ignore tweets that come back from other than our last request
+    // b) when we want to referesh, we only get tweets newer than our last request
     private var lastTwitterRequest: Twitter.Request?
     
+    // takes the searchText part of our Model
+    // and fires off a fetch fro matching Tweets
+    // when thet come back (if they're still relevant)
+    // we update our tweets array
+    // and then let the table view know that we added a section
+    // (it will than call our UITableViewDataSource to get what it needs)
     private func searchForTweets() {
+        // "lastTwitterRequest?.newer ??" was added after lecture for REFRESHING
         if let request = lastTwitterRequest?.newer ?? twitterRequest() {
             lastTwitterRequest = request
             request.fetchTweets { [weak self] (newTweets) in
@@ -69,7 +83,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         super.viewDidLoad()
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        searchText = "#stanford"
+        //searchText = "#stanford"
     }
     
     @IBOutlet weak var searchTextField: UITextField! {

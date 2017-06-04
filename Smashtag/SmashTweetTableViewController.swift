@@ -40,7 +40,7 @@ class SmashTweetTableViewController: TweetTableViewController
 				} else {
 					print("off main thread")
 				}
-				if let tweetCount = (try? context.fetch(Tweet.fetchRequest()))?.count {
+                if let tweetCount: Int = (try? context.fetch(Tweet.tweetFetchRequest()))?.count {
 					print("\(tweetCount) tweets")
 				}
 				// a better way .... context.count

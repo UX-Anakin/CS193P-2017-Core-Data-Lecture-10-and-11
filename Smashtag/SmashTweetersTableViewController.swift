@@ -47,7 +47,7 @@ class SmashTweetersTableViewController: FetchedResultsTableViewController
     }
 	
 	private func tweetCountWithMentionBy(_ twitterUser: TwitterUser) -> Int {
-		let request: NSFetchRequest<Tweet> = Tweet.fetchRequest()
+		let request: NSFetchRequest<Tweet> = Tweet.tweetFetchRequest()
 		request.predicate = NSPredicate(format: "text contains[c] %@ and tweeter = %@", mention!, twitterUser)
 		return (try? twitterUser.managedObjectContext!.count(for: request)) ?? 0
 	}
