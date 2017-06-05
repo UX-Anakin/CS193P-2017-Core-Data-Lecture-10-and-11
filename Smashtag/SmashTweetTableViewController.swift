@@ -12,7 +12,9 @@ import CoreData
 
 class SmashTweetTableViewController: TweetTableViewController
 {
+    /// model default value
     var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
+    
     
     override func insertTweets(_ newTweets: [Twitter.Tweet])
     {
@@ -21,8 +23,10 @@ class SmashTweetTableViewController: TweetTableViewController
     }
     
     private func updateDatabase(with tweets: [Twitter.Tweet])
-    {   print("starting database load...")
-        container?.performBackgroundTask {  [weak self] context in
+    {
+        print("starting database load...")
+        container?.performBackgroundTask {
+            [weak self] context in
             for twitterInfo in tweets {
                 _ = try? Tweet.findOrCreateTweet(matching: twitterInfo, in: context)
             }
@@ -33,20 +37,23 @@ class SmashTweetTableViewController: TweetTableViewController
     }
     
     private func printDatabaseStatistics()
-    {   if let context = container?.viewContext {	// context == main context on main thread
+    {
+        if let context = container?.viewContext {   // context == main context on main thread
 			context.perform {						// better be sure this is executed on main thread
 				if Thread.isMainThread {
 					print("on main thread")
 				} else {
 					print("off main thread")
 				}
-                if let tweetCount: Int = (try? context.fetch(Tweet.tweetFetchRequest()))?.count {
+                let request: NSFetchRequest<Tweet> = Tweet.fetchRequest()
+                if let tweetCount: Int = (try? context.fetch(request))?.count {
 					print("\(tweetCount) tweets")
 				}
 				// a better way .... context.count
 				if let tweeterCount = try? context.count(for: TwitterUser.fetchRequest()) {
-					print("\(tweeterCount) twitter users")
+					print("\(tweeterCount) Twitter users")
 				}
+                
 			}
         }
         
@@ -57,7 +64,6 @@ class SmashTweetTableViewController: TweetTableViewController
 			if let tweetersTVC = segue.destination as? SmashTweetersTableViewController {
 				tweetersTVC.mention = searchText
 				tweetersTVC.container = container
-				
 			}
 		}
 

@@ -29,6 +29,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
+    /// internal which mean it can be overwritten or called
     internal func insertTweets(_ newTweets: [Twitter.Tweet])    // implicitly all functions are internal,
     {                                                           // in contrast to 'private'  and 'fileprivate'
         self.tweets.insert(newTweets, at: 0)

@@ -14,15 +14,17 @@ class SmashTweetersTableViewController: FetchedResultsTableViewController
 {
 	var mention: String? { didSet { updateUI() } }
 	
-	var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
+    var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer { didSet {updateUI() }}
 	
     fileprivate var fetchedResultsController: NSFetchedResultsController<TwitterUser>?
 	
 	private func updateUI()
-    {   if let context = container?.viewContext, mention != nil {
+    {
+        if let context = container?.viewContext, mention != nil {
             let request: NSFetchRequest<TwitterUser> = TwitterUser.fetchRequest()
 			let selector = #selector(NSString.caseInsensitiveCompare(_:))
 			request.sortDescriptors = [NSSortDescriptor(key: "handle", ascending: true, selector: selector)]
+            /// ??
             request.predicate = NSPredicate(format: "any tweets.text contains[c] %@", mention!)
             fetchedResultsController = NSFetchedResultsController<TwitterUser>(
                 fetchRequest: request,
@@ -47,7 +49,7 @@ class SmashTweetersTableViewController: FetchedResultsTableViewController
     }
 	
 	private func tweetCountWithMentionBy(_ twitterUser: TwitterUser) -> Int {
-		let request: NSFetchRequest<Tweet> = Tweet.tweetFetchRequest()
+		let request: NSFetchRequest<Tweet> = Tweet.fetchRequest()
 		request.predicate = NSPredicate(format: "text contains[c] %@ and tweeter = %@", mention!, twitterUser)
 		return (try? twitterUser.managedObjectContext!.count(for: request)) ?? 0
 	}
